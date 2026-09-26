@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flagged — Flag Guessing Game</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚩</text></svg>" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Luckiest+Guy&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <button class="ghost-btn icon-btn" id="music-toggle" aria-label="Toggle background music" title="Toggle music">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 9 3 15 8 15 13 20 13 4 8 9 3 9"></polygon><path d="M16 8a5 5 0 0 1 0 8"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
+  </button>
+  <nav class="topbar-nav">
+    <button class="ghost-btn" data-nav="home">Home</button>
+  </nav>
+</header>
+
+<main id="app">
+
+  <!-- HOME -->
+  <section class="screen active" data-screen="home">
+    <div class="hero">
+      <img class="hero-logo" src="assets/flagged-logo.png" alt="Flagged" />
+    </div>
+
+    <div class="mode-grid">
+      <button class="mode-card" data-nav="single-setup">
+        <span class="mode-card-index">SOLO</span>
+        <h2>Singleplayer</h2>
+        <p>Work through every country. See what you got right and what you missed at the end.</p>
+        <span class="mode-card-mobile-label">Singleplayer</span>
+      </button>
+      <button class="mode-card" data-nav="mp-setup">
+        <span class="mode-card-index">1V1</span>
+        <h2>Multiplayer</h2>
+        <p>15 flags, one random opponent, higher score wins.</p>
+        <span class="mode-card-mobile-label">Multiplayer</span>
+      </button>
+      <button class="mode-card" data-nav="custom-setup">
+        <span class="mode-card-index">2–4</span>
+        <h2>Custom game</h2>
+        <p>Make a room, invite up to 3 friends, race through all the flags or a fast 15 with sudden death.</p>
+        <span class="mode-card-mobile-label">Custom game</span>
+      </button>
+    </div>
+
+    <p class="firebase-warning" id="firebase-warning" hidden>
+      Multiplayer isn't connected yet — add your Firebase config in <code>js/firebase-config.js</code> to enable Quick Match and Custom Lobby. Single player works right now.
+    </p>
+  </section>
+
+  <!-- SINGLE PLAYER SETUP -->
+  <section class="screen" data-screen="single-setup">
+    <h2 class="screen-title">Single player</h2>
+    <p class="screen-sub">All 196 countries, shuffled. Choose how you want to answer.</p>
+    <div class="choice-row" id="single-difficulty-choice">
+      <button class="choice-card" data-value="choice">
+        <h3>Multiple choice</h3>
+        <p>See a country's name, pick the matching flag from 4 options.</p>
+      </button>
+      <button class="choice-card" data-value="type">
+        <h3>Type the name</h3>
+        <p>See a flag, type the country's name yourself.</p>
+      </button>
+    </div>
+    <div class="screen-actions">
+      <button class="ghost-btn" data-nav="home">Back</button>
+    </div>
+  </section>
+
+  <!-- SINGLE PLAYER PLAY -->
+  <section class="screen" data-screen="single-play">
+    <div class="play-header">
+      <div class="progress-track"><div class="progress-fill" id="single-progress-fill"></div></div>
+      <div class="play-meta">
+        <span id="single-progress-text">Question 1 of 196</span>
+        <span id="single-score-text">Correct: 0 · Missed: 0</span>
+      </div>
+    </div>
+    <div class="quiz-stage" id="single-quiz-stage"></div>
+    <div class="screen-actions">
+      <button class="ghost-btn" id="single-end-btn">End quiz now</button>
+    </div>
+  </section>
+
+  <!-- SINGLE PLAYER RESULTS -->
+  <section class="screen" data-screen="single-results">
+    <h2 class="screen-title">Results</h2>
+    <div class="result-score" id="single-result-score"></div>
+    <div class="missed-wrap" id="single-missed-wrap"></div>
+    <div class="screen-actions">
+      <button class="primary-btn" data-nav="single-setup">Play again</button>
+      <button class="ghost-btn" data-nav="home">Home</button>
+    </div>
+  </section>
+
+  <!-- MULTIPLAYER 1v1 SETUP -->
+  <section class="screen" data-screen="mp-setup">
+    <h2 class="screen-title">Quick match</h2>
+    <p class="screen-sub">15 flags. Whoever scores higher wins — a tie is a tie.</p>
+    <label class="field-label" for="mp-name-input">Your name</label>
+    <input class="text-input" id="mp-name-input" maxlength="18" placeholder="e.g. Martin" />
+    <div class="choice-row" id="mp-difficulty-choice">
+      <button class="choice-card" data-value="choice">
+        <h3>Multiple choice</h3>
+        <p>Pick the right flag from 4 options.</p>
+      </button>
+      <button class="choice-card" data-value="type">
+        <h3>Type the name</h3>
+        <p>Type the country's name.</p>
+      </button>
+    </div>
+    <div class="screen-actions">
+      <button class="primary-btn" id="mp-find-btn" disabled>Find opponent</button>
+      <button class="ghost-btn" data-nav="home">Back</button>
+    </div>
+    <div class="searching-panel" id="mp-searching-panel" hidden>
+      <div class="spinner"></div>
+      <p>Looking for an opponent…</p>
+      <button class="ghost-btn" id="mp-cancel-btn">Cancel</button>
+    </div>
+  </section>
+
+  <!-- MULTIPLAYER 1v1 PLAY -->
+  <section class="screen" data-screen="mp-play">
+    <div class="duel-header">
+      <div class="duel-side">
+        <span class="duel-name" id="mp-me-name">You</span>
+        <div class="progress-track small"><div class="progress-fill" id="mp-me-progress"></div></div>
+        <span class="duel-score" id="mp-me-score">0 correct</span>
+      </div>
+      <div class="duel-vs" id="mp-timer">10</div>
+      <div class="duel-side">
+        <span class="duel-name" id="mp-opp-name">Opponent</span>
+        <div class="progress-track small"><div class="progress-fill" id="mp-opp-progress"></div></div>
+        <span class="duel-score" id="mp-opp-score">0 correct</span>
+      </div>
+    </div>
+    <p class="round-counter" id="mp-round-text">Round 1 of 15</p>
+    <div class="quiz-stage" id="mp-quiz-stage"></div>
+  </section>
+
+  <!-- MULTIPLAYER 1v1 RESULTS -->
+  <section class="screen" data-screen="mp-results">
+    <h2 class="screen-title" id="mp-result-title">Results</h2>
+    <div class="duel-final" id="mp-result-body"></div>
+    <div class="screen-actions">
+      <button class="primary-btn" data-nav="mp-setup">Play again</button>
+      <button class="ghost-btn" data-nav="home">Home</button>
+    </div>
+  </section>
+
+  <!-- CUSTOM LOBBY SETUP -->
+  <section class="screen" data-screen="custom-setup">
+    <h2 class="screen-title">Custom lobby</h2>
+    <p class="screen-sub">2 to 4 players. Create a room and share the code, or join one.</p>
+    <label class="field-label" for="custom-name-input">Your name</label>
+    <input class="text-input" id="custom-name-input" maxlength="18" placeholder="e.g. Martin" />
+
+    <div class="custom-tabs">
+      <button class="tab-btn active" data-tab="create">Create room</button>
+      <button class="tab-btn" data-tab="join">Join room</button>
+    </div>
+
+    <div class="tab-panel active" data-tab-panel="create">
+      <p class="field-label">Length</p>
+      <div class="choice-row">
+        <button class="choice-card" data-field="length" data-value="all">
+          <h3>All countries</h3>
+          <p>All 196 flags. Highest score at the end wins, ties allowed.</p>
+        </button>
+        <button class="choice-card" data-field="length" data-value="15">
+          <h3>15 flags</h3>
+          <p>Fast round. Tied leaders go to sudden death.</p>
+        </button>
+      </div>
+      <p class="field-label">Difficulty</p>
+      <div class="choice-row">
+        <button class="choice-card" data-field="difficulty" data-value="choice">
+          <h3>Multiple choice</h3>
+          <p>Pick the right flag from 4 options.</p>
+        </button>
+        <button class="choice-card" data-field="difficulty" data-value="type">
+          <h3>Type the name</h3>
+          <p>Type the country's name.</p>
+        </button>
+      </div>
+      <div class="screen-actions">
+        <button class="primary-btn" id="custom-create-btn" disabled>Create room</button>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="join">
+      <label class="field-label" for="custom-code-input">Room code</label>
+      <input class="text-input code-input" id="custom-code-input" maxlength="5" placeholder="e.g. K7QXP" />
+      <div class="screen-actions">
+        <button class="primary-btn" id="custom-join-btn" disabled>Join room</button>
+      </div>
+    </div>
+
+    <div class="screen-actions">
+      <button class="ghost-btn" data-nav="home">Back</button>
+    </div>
+  </section>
+
+  <!-- CUSTOM LOBBY WAITING ROOM -->
+  <section class="screen" data-screen="custom-lobby">
+    <h2 class="screen-title">Lobby</h2>
+    <p class="screen-sub" id="custom-lobby-mode"></p>
+    <div class="room-code-panel">
+      <p>Room code</p>
+      <span class="room-code" id="custom-room-code">-----</span>
+    </div>
+    <ul class="player-list" id="custom-player-list"></ul>
+    <div class="screen-actions">
+      <button class="primary-btn" id="custom-start-btn" hidden disabled>Start game</button>
+      <span class="waiting-note" id="custom-waiting-note">Waiting for the host to start…</span>
+      <button class="ghost-btn" id="custom-leave-btn">Leave</button>
+    </div>
+  </section>
+
+  <!-- CUSTOM LOBBY PLAY -->
+  <section class="screen" data-screen="custom-play">
+    <div class="play-header">
+      <div class="progress-track"><div class="progress-fill" id="custom-progress-fill"></div></div>
+      <div class="play-meta">
+        <span id="custom-progress-text">Question 1</span>
+        <span id="custom-timer">10</span>
+      </div>
+    </div>
+    <div class="scoreboard" id="custom-live-scoreboard"></div>
+    <div class="quiz-stage" id="custom-quiz-stage"></div>
+  </section>
+
+  <!-- CUSTOM LOBBY SUDDEN DEATH -->
+  <section class="screen" data-screen="custom-sudden">
+    <h2 class="screen-title">Sudden death</h2>
+    <p class="screen-sub" id="custom-sudden-sub">Tied at the top — one mistake and you're out.</p>
+    <p class="round-counter" id="custom-sudden-round">Round 1</p>
+    <div class="play-meta"><span></span><span id="custom-sudden-timer">10</span></div>
+    <div class="scoreboard" id="custom-sudden-scoreboard"></div>
+    <div class="quiz-stage" id="custom-sudden-stage"></div>
+    <p class="waiting-note" id="custom-sudden-waiting" hidden>Waiting for the others to answer…</p>
+  </section>
+
+  <!-- CUSTOM LOBBY RESULTS -->
+  <section class="screen" data-screen="custom-results">
+    <h2 class="screen-title">Final standings</h2>
+    <ol class="standings-list" id="custom-standings-list"></ol>
+    <div class="screen-actions">
+      <button class="primary-btn" data-nav="custom-setup">New lobby</button>
+      <button class="ghost-btn" data-nav="home">Home</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="page-footer">
+  <p>Flags via flag-icons. Built for GitHub Pages.</p>
+</footer>
+
+<!-- Firebase (compat build — simplest to use from plain script tags) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+
+<script src="js/countries.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/quiz-ui.js"></script>
+<script src="js/singleplayer.js"></script>
+<script src="js/multiplayer.js"></script>
+<audio id="bg-music" src="assets/bg-music.mp3" loop preload="auto"></audio>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
