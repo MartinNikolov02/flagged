@@ -28,9 +28,16 @@
 <body>
 
 <header class="topbar">
-  <button class="ghost-btn icon-btn" id="music-toggle" aria-label="Toggle background music" title="Toggle music">
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 9 3 15 8 15 13 20 13 4 8 9 3 9"></polygon><path d="M16 8a5 5 0 0 1 0 8"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
-  </button>
+<button class="ghost-btn icon-btn" id="music-toggle" aria-label="Toggle background music" title="Toggle music"></button>
+<script>
+  (function () {
+    var btn = document.getElementById("music-toggle");
+    var muted = localStorage.getItem("flagged-music-muted") === "true";
+    var unmutedSvg = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 9 3 15 8 15 13 20 13 4 8 9 3 9"></polygon><path d="M16 8a5 5 0 0 1 0 8"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg>';
+    var mutedSvg = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 9 3 15 8 15 13 20 13 4 8 9 3 9"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+    btn.innerHTML = muted ? mutedSvg : unmutedSvg;
+  })();
+</script>
   <nav class="topbar-nav">
     <button class="ghost-btn" data-nav="home">Home</button>
   </nav>
