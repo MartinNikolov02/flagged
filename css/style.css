@@ -36,7 +36,7 @@ body {
 @media (max-width: 700px) {
   body {
     background:
-      linear-gradient(rgba(10, 25, 80, 0.18), rgba(10, 25, 80, 0.3)),
+      linear-gradient(rgba(8, 20, 65, 0.38), rgba(8, 20, 65, 0.49)),
       url("../assets/world-bg-mobile.jpg") center / cover no-repeat;
     background-attachment: scroll; /* fixed backgrounds can jank on mobile */
   }
