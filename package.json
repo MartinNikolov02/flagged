@@ -1,0 +1,26 @@
+{
+  "name": "flag-game",
+  "version": "1.0.0",
+  "description": "A flag-guessing game: single player (all 197 countries), quick-match 1v1, and a custom lobby for 2–4 players with sudden death on a tie. Pure static site — hosts for free on GitHub Pages. Multiplayer uses Firebase's free Realtime Database.",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartinNikolov02/flagged.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MartinNikolov02/flagged/issues"
+  },
+  "homepage": "https://github.com/MartinNikolov02/flagged#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2"
+  }
+}
