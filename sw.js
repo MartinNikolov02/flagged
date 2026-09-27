@@ -1,6 +1,6 @@
 // Bump this version string any time you change any cached file, so
 // visitors actually get the new version instead of a stale cached copy.
-const CACHE_NAME = "flagged-cache-v5";
+const CACHE_NAME = "flagged-cache-v6";
 
 const PRECACHE_URLS = [
   "./",

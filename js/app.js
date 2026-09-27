@@ -43,27 +43,29 @@ const App = (() => {
     if (!audio || !btn) return;
  
     let muted = localStorage.getItem("flagged-music-muted") === "true";
-    audio.muted = muted;
     audio.volume = 0.35;
     btn.innerHTML = muted
   ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 9 3 15 8 15 13 20 13 4 8 9 3 9"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>'
   : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 9 3 15 8 15 13 20 13 4 8 9 3 9"></polygon><path d="M16 8a5 5 0 0 1 0 8"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg>';
  
     function tryPlay() {
-      if (audio.paused) audio.play().catch(() => {});
+    if (!muted && audio.paused) audio.play().catch(() => {});
     }
  
     tryPlay();
     document.addEventListener("click", tryPlay, { once: true });
  
-    btn.addEventListener("click", () => {
+        btn.addEventListener("click", () => {
       muted = !muted;
-      audio.muted = muted;
       localStorage.setItem("flagged-music-muted", String(muted));
           btn.innerHTML = muted
       ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 9 3 15 8 15 13 20 13 4 8 9 3 9"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>'
       : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 9 3 15 8 15 13 20 13 4 8 9 3 9"></polygon><path d="M16 8a5 5 0 0 1 0 8"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg>';
-      if (!muted) tryPlay();
+      if (muted) {
+        audio.pause();
+      } else {
+        tryPlay();
+      }
     });
   }
  
