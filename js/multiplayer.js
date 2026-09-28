@@ -353,7 +353,7 @@ const Multiplayer = (() => {
     function enterLobbyScreen() {
       App.goTo("custom-lobby");
       document.getElementById("custom-room-code").textContent = code;
-      const modeLabel = length === "all" ? "All 196 countries" : "15 flags, sudden death on a tie";
+      const modeLabel = length === "all" ? "All 197 countries" : "15 flags, sudden death on a tie";
       const diffLabel = difficulty === "choice" ? "Multiple choice" : "Type the name";
       document.getElementById("custom-lobby-mode").textContent = `${modeLabel} · ${diffLabel}`;
       currentStatus = "waiting";
