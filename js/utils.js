@@ -77,6 +77,63 @@ const Utils = (() => {
     return shuffle([correctCode, ...wrong]);
   }
  
-  return { shuffle, sample, normalize, isCorrectAnswer, roomCode, playerId, flagClass, makeOptionCodes };
+    // Restarts a CSS shake animation on an element even if it's already
+  // mid-shake (e.g. rapid wrong answers) — removing the class, forcing a
+  // reflow, then re-adding it is what makes the animation replay cleanly.
+  function shakeElement(el) {
+    if (!el) return;
+    el.classList.remove("shake");
+    void el.offsetWidth;
+    el.classList.add("shake");
+  }
+
+  // Which streak counts are worth celebrating: 3, 5, then every 5 from 10 on.
+  function shouldCelebrateStreak(streak) {
+    if (streak === 3 || streak === 5) return true;
+    if (streak >= 10 && streak % 5 === 0) return true;
+    return false;
+  }
+
+  function showStreak(streak) {
+    const toast = document.createElement("div");
+    toast.className = "streak-toast";
+    toast.textContent = `${streak} STREAK!`;
+    document.body.appendChild(toast);
+    toast.addEventListener("animationend", () => toast.remove());
+  }
+
+  const CONFETTI_COLORS = ["#ff7a3d", "#23a866", "#2a5be0", "#ffd166", "#e5484d", "#ffffff"];
+
+  function confettiBurst(count = 60) {
+    const overlay = document.createElement("div");
+    overlay.className = "confetti-overlay";
+    for (let i = 0; i < count; i++) {
+      const piece = document.createElement("span");
+      piece.className = "confetti-piece";
+      piece.style.left = Math.random() * 100 + "%";
+      piece.style.background = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+      piece.style.animationDuration = 2 + Math.random() * 1.5 + "s";
+      piece.style.animationDelay = Math.random() * 0.4 + "s";
+      piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+      overlay.appendChild(piece);
+    }
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.remove(), 4000);
+  }
+
+  return {
+    shuffle,
+    sample,
+    normalize,
+    isCorrectAnswer,
+    roomCode,
+    playerId,
+    flagClass,
+    makeOptionCodes,
+    shakeElement,
+    shouldCelebrateStreak,
+    showStreak,
+    confettiBurst,
+  };
 })();
  

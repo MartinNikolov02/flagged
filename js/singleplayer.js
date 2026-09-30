@@ -4,6 +4,7 @@ const SinglePlayer = (() => {
   let correct = 0;
   let missed = [];
   let difficulty = "choice";
+  let streak = 0;
 
   function start(chosenDifficulty) {
     difficulty = chosenDifficulty;
@@ -11,6 +12,7 @@ const SinglePlayer = (() => {
     index = 0;
     correct = 0;
     missed = [];
+    streak = 0;
     App.goTo("single-play");
     next();
   }
@@ -20,9 +22,15 @@ const SinglePlayer = (() => {
     const country = queue[index];
     updateHeader();
     const stage = document.getElementById("single-quiz-stage");
-    QuizUI.render(stage, country, difficulty, (isCorrect) => {
-      if (isCorrect) correct++;
-      else missed.push(country);
+        QuizUI.render(stage, country, difficulty, (isCorrect) => {
+      if (isCorrect) {
+        correct++;
+        streak++;
+        if (Utils.shouldCelebrateStreak(streak)) Utils.showStreak(streak);
+      } else {
+        missed.push(country);
+        streak = 0;
+      }
       index++;
       next();
     });
@@ -51,6 +59,7 @@ const SinglePlayer = (() => {
         wrap.appendChild(chip);
       });
     }
+        if (total > 0) Utils.confettiBurst();
     App.goTo("single-results");
   }
 

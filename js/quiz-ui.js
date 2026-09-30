@@ -44,28 +44,32 @@ const QuizUI = (() => {
       btn.className = "flag-option";
       btn.innerHTML = `<span class="${Utils.flagClass(opt.code)}"></span>`;
       btn.dataset.code = opt.code;
-      btn.addEventListener("click", () => {
+            btn.addEventListener("click", () => {
         if (answered) return;
         answered = true;
         const correct = opt.code === country.code;
         lockAndReveal(correct ? btn : null);
-        if (!correct) btn.classList.add("wrong");
+        if (!correct) {
+          btn.classList.add("wrong");
+          Utils.shakeElement(btn);
+        }
         setTimeout(() => onAnswer(correct), 550);
       });
       grid.appendChild(btn);
     });
     stageEl.appendChild(grid);
  
-    return {
+        return {
       expire() {
         if (answered) return;
         answered = true;
         lockAndReveal(null);
+        Utils.shakeElement(grid);
         onAnswer(false);
       },
     };
   }
- 
+
   function renderTypeAnswer(stageEl, country, onAnswer) {
     const flagWrap = document.createElement("div");
     flagWrap.className = "quiz-flag-big";
@@ -97,20 +101,22 @@ const QuizUI = (() => {
       e.preventDefault();
       if (answered) return;
       answered = true;
-      const correct = Utils.isCorrectAnswer(input.value, country);
+            const correct = Utils.isCorrectAnswer(input.value, country);
       lock();
       feedback.classList.add(correct ? "correct" : "wrong");
       feedback.textContent = correct ? "Correct!" : `It was ${country.name}`;
+      if (!correct) Utils.shakeElement(form);
       setTimeout(() => onAnswer(correct), correct ? 500 : 1100);
     });
  
-    return {
+        return {
       expire() {
         if (answered) return;
         answered = true;
         lock();
         feedback.classList.add("wrong");
         feedback.textContent = `Time's up! It was ${country.name}`;
+        Utils.shakeElement(form);
         onAnswer(false);
       },
     };

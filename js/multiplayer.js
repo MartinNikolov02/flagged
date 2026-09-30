@@ -252,9 +252,10 @@ const Multiplayer = (() => {
       if (!me || !opp) {
         title.textContent = "Match ended";
         body.innerHTML = "";
-      } else if (me.score > opp.score) {
+            } else if (me.score > opp.score) {
         title.textContent = "You won! 🎉";
         body.innerHTML = `<h3>${me.score} — ${opp.score}</h3>`;
+        Utils.confettiBurst();
       } else if (me.score < opp.score) {
         title.textContent = "You lost this one";
         body.innerHTML = `<h3>${me.score} — ${opp.score}</h3>`;
@@ -630,11 +631,12 @@ const Multiplayer = (() => {
           li.innerHTML = `<span>${winner[1].name} — won the tiebreaker</span><span class="std-score">${winner[1].score}</span>`;
           list.appendChild(li);
         }
-        entries.filter(([id]) => id !== room.winnerId).forEach(([, p]) => {
+                entries.filter(([id]) => id !== room.winnerId).forEach(([, p]) => {
           const li = document.createElement("li");
           li.innerHTML = `<span>${p.name}</span><span class="std-score">${p.score}</span>`;
           list.appendChild(li);
         });
+        if (room.winnerId === myId) Utils.confettiBurst();
       } else {
         entries.forEach(([, p], i) => {
           const li = document.createElement("li");
@@ -642,6 +644,7 @@ const Multiplayer = (() => {
           li.innerHTML = `<span>${p.name}</span><span class="std-score">${p.score}</span>`;
           list.appendChild(li);
         });
+        if (entries.length && entries[0][0] === myId) Utils.confettiBurst();
       }
     }
  

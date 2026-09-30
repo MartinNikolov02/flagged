@@ -652,3 +652,75 @@ button, input { font-family: inherit; }
   }
 }
  
+/* ---------- Feedback animations ---------- */
+@keyframes flagged-shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+.shake { animation: flagged-shake 0.5s; }
+
+.streak-toast {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  background: var(--accent);
+  color: var(--white);
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 20px;
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-card);
+  z-index: 9999;
+  opacity: 0;
+  animation: flagged-streak-pop 1.4s ease forwards;
+  pointer-events: none;
+}
+@keyframes flagged-streak-pop {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.6) translateY(10px); }
+  15% { opacity: 1; transform: translateX(-50%) scale(1.05) translateY(0); }
+  25% { transform: translateX(-50%) scale(1) translateY(0); }
+  80% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) scale(0.9) translateY(-10px); }
+}
+
+.confetti-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9998;
+}
+.confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0.9;
+  animation-name: flagged-confetti-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes flagged-confetti-fall {
+  to { transform: translateY(110vh) rotate(360deg); opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shake { animation: none; }
+  .streak-toast { animation: none; opacity: 1; transform: translateX(-50%); }
+  .confetti-piece { animation: none; display: none; }
+}
+
+/* ---------- Touch / tap feedback ---------- */
+.primary-btn:active:not(:disabled),
+.ghost-btn:active,
+.choice-card:active,
+.mode-card:active,
+.flag-option:active:not(:disabled),
+.tab-btn:active {
+  transform: scale(0.96);
+  transition: transform 0.08s ease;
+}
